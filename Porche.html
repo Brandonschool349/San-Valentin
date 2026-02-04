@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Special Surprise</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Poppins', system-ui, sans-serif;
+      background: linear-gradient(135deg, #1a1a1a, #333);
+      overflow: hidden;
+    }
+
+    .card {
+      background: white;
+      padding: 2.5rem 2rem 3rem;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      text-align: center;
+      max-width: 420px;
+      width: 90%;
+      position: relative;
+      transition: all 0.6s ease;
+    }
+
+    h1 { margin-bottom: 1rem; }
+    p { color: #555; }
+
+    button {
+      border: none;
+      cursor: pointer;
+      padding: 1rem 1.8rem;
+      border-radius: 999px;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+
+    /* ===== PORSCHE SCREEN ===== */
+    #porscheScreen img {
+      width: 100%;
+      border-radius: 16px;
+      margin-bottom: 1rem;
+    }
+
+    #porscheBtn {
+      background: black;
+      color: white;
+      margin-top: 1.5rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+
+    #porscheBtn:hover {
+      transform: scale(1.1);
+    }
+
+    /* ===== VALENTINE SCREEN (HIDDEN FIRST) ===== */
+    #valentineScreen { 
+      display: none;
+      background: linear-gradient(135deg, #ffd6e8, #ffeef6);
+    }
+
+    #valentineScreen h1 {
+      color: #ff4d88;
+    }
+
+    .buttons {
+      position: relative;
+      height: 120px;
+    }
+
+    #yes, #no {
+      position: absolute;
+      padding: 0.9rem 1.6rem;
+      border-radius: 999px;
+      font-size: 1rem;
+    }
+
+    #yes {
+      background: linear-gradient(135deg, #ff5fa2, #ff86b3);
+      color: white;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    #yes:hover {
+      transform: translate(-50%, -50%) scale(1.15);
+    }
+
+    #no {
+      background: #f2f2f2;
+      color: #999;
+      left: 20%;
+      top: 60%;
+    }
+
+    .result {
+      display: none;
+      margin-top: 1.5rem;
+      color: #ff4d88;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .hearts {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      border-radius: 24px;
+    }
+
+    .heart {
+      position: absolute;
+      bottom: -20px;
+      font-size: 1.2rem;
+      animation: float 6s linear infinite;
+      opacity: 0.6;
+    }
+
+    @keyframes float {
+      from { transform: translateY(0) scale(1); opacity: 0.6; }
+      to { transform: translateY(-120%) scale(1.4); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PORSCHE TROLL SCREEN -->
+  <div class="card" id="porscheScreen">
+    <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70" alt="Porsche">
+    <h1>Do you want a free Porsche?</h1>
+    <p>This is your last chance to claim it.</p>
+    <button id="porscheBtn">YES, I WANT IT</button>
+  </div>
+
+  <!-- VALENTINE SCREEN -->
+  <div class="card" id="valentineScreen">
+    <div class="hearts" id="hearts"></div>
+    <h1>Will you be my Valentine? 💖</h1>
+    <p>I promise laughs, love, and beautiful moments together.</p>
+    <div class="buttons">
+      <button id="yes">Yes 💘</button>
+      <button id="no">No</button>
+    </div>
+    <div class="result" id="result">I knew you would say yes 💞💞💞</div>
+  </div>
+
+  <script>
+    const porscheBtn = document.getElementById('porscheBtn');
+    const porscheScreen = document.getElementById('porscheScreen');
+    const valentineScreen = document.getElementById('valentineScreen');
+
+    function showValentine() {
+      porscheScreen.style.display = 'none';
+      valentineScreen.style.display = 'block';
+      document.body.style.background = 'linear-gradient(135deg, #ffd6e8, #ffeef6)';
+    }
+
+    porscheBtn.addEventListener('mouseenter', showValentine);
+    porscheBtn.addEventListener('click', showValentine);
+
+    const noBtn = document.getElementById('no');
+    const yesBtn = document.getElementById('yes');
+    const result = document.getElementById('result');
+    const heartsContainer = document.getElementById('hearts');
+
+    function moveNoButton() {
+      const rect = valentineScreen.getBoundingClientRect();
+      const maxX = rect.width - noBtn.offsetWidth - 20;
+      const maxY = rect.height - noBtn.offsetHeight - 20;
+
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top = `${y}px`;
+    }
+
+    noBtn.addEventListener('mouseenter', moveNoButton);
+    noBtn.addEventListener('click', moveNoButton);
+
+    yesBtn.addEventListener('click', () => {
+      result.style.display = 'block';
+      yesBtn.style.transform = 'translate(-50%, -50%) scale(1.3)';
+      createHearts(20);
+    });
+
+    function createHearts(amount) {
+      for (let i = 0; i < amount; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.textContent = '💗';
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.animationDuration = 3 + Math.random() * 3 + 's';
+        heartsContainer.appendChild(heart);
+        setTimeout(() => heart.remove(), 6000);
+      }
+    }
+  </script>
+</body>
+</html>
